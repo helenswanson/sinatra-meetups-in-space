@@ -7,6 +7,7 @@ require_relative 'config/application'
 
 Dir['app/**/*.rb'].each { |file| require_relative file }
 
+# helper methods available in normal files and templates
 helpers do
   def current_user
     user_id = session[:user_id]
@@ -34,8 +35,10 @@ get '/' do
 end
 
 get '/auth/github/callback' do
+  # hash full of information
   auth = env['omniauth.auth']
 
+  # take hash and push into method
   user = User.find_or_create_from_omniauth(auth)
   set_current_user(user)
   flash[:notice] = "You're now signed in as #{user.username}!"
@@ -53,3 +56,19 @@ end
 get '/example_protected_page' do
   authenticate!
 end
+
+# what we want, not what is there (yet)
+get '/meetups/:id' do
+  @meetup = Meetup.find(params[:id])
+
+  erb :'meetups/show'
+end
+
+
+
+
+
+
+
+
+
